@@ -3,6 +3,7 @@ import { AcademicLevel, Language } from '../types';
 import { translations } from '../translations';
 import { Upload, FileText, Image as ImageIcon, Sparkles, CheckCircle2, AlertCircle, ArrowRight, BookOpen, Copy, Check } from 'lucide-react';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { apiFetch } from '../lib/api';
 
 interface UploadTabProps {
   language: Language;
@@ -60,25 +61,25 @@ export const UploadTab: React.FC<UploadTabProps> = ({
         const base64Data = result.split(',')[1];
         const mimeType = file.type || (file.name.endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream');
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fileData: { data: base64Data, mimeType },
-            filename: file.name,
-            userInstruction: instruction,
-            academicLevel,
-            language,
-          }),
-        });
+        try {
+          const data = await apiFetch('/api/upload', {
+            method: 'POST',
+            body: JSON.stringify({
+              fileData: { data: base64Data, mimeType },
+              filename: file.name,
+              userInstruction: instruction,
+              academicLevel,
+              language,
+            }),
+          });
 
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || t.common.error);
+          setAnalysisResult(data.analysis);
+        } catch (err: any) {
+          console.error('Upload processing error:', err);
+          setErrorMessage(err.message || t.common.error);
+        } finally {
+          setIsLoading(false);
         }
-
-        setAnalysisResult(data.analysis);
       };
 
       reader.readAsDataURL(file);

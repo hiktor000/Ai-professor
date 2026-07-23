@@ -3,6 +3,7 @@ import { AcademicLevel, ChatMessage, Language } from '../types';
 import { translations } from '../translations';
 import { Send, Paperclip, Trash2, Bot, User, FileText, Sparkles, AlertCircle, Copy, Check } from 'lucide-react';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { apiFetch } from '../lib/api';
 
 interface ChatTabProps {
   language: Language;
@@ -99,11 +100,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const data = await apiFetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           messages: updatedMessages.map((m) => ({ role: m.role, content: m.content })),
           academicLevel,
@@ -111,12 +109,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({
           fileData: currentFile ? { mimeType: currentFile.mimeType, data: currentFile.data } : undefined,
         }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || t.common.error);
-      }
 
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),

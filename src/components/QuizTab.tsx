@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { AcademicLevel, Language, Quiz, QuizQuestion } from '../types';
 import { translations } from '../translations';
 import { GraduationCap, Sparkles, CheckCircle2, XCircle, RotateCcw, AlertCircle, Award } from 'lucide-react';
+import { apiFetch } from '../lib/api';
 
 interface QuizTabProps {
   language: Language;
@@ -42,9 +43,8 @@ export const QuizTab: React.FC<QuizTabProps> = ({
     setUserAnswers({});
 
     try {
-      const response = await fetch('/api/quiz', {
+      const data = await apiFetch('/api/quiz', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topic,
           content,
@@ -55,10 +55,8 @@ export const QuizTab: React.FC<QuizTabProps> = ({
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success || !data.quiz) {
-        throw new Error(data.error || t.common.error);
+      if (!data.quiz) {
+        throw new Error(t.common.error);
       }
 
       const generatedQuiz: Quiz = {

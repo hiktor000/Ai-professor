@@ -89,19 +89,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
         <div className="absolute -left-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-[80px]"></div>
       </div>
 
-      {/* Security Architecture Info Box */}
-      <div className="bg-emerald-50 dark:bg-emerald-950/40 p-6 rounded-3xl border border-emerald-200/80 dark:border-emerald-900/60 text-xs sm:text-sm text-emerald-900 dark:text-emerald-200 space-y-2 shadow-xs">
-        <div className="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-300">
-          <ShieldCheck className="w-5 h-5 text-emerald-500" />
-          <span>{t.common.secureBackendNotice}</span>
-        </div>
-        <p className="leading-relaxed font-medium">
-          {language === 'ar'
-            ? 'تم تصميم هذا التطبيق بحيث تمر جميع الطلبات عبر الخادم الآمن (Express / Node.js) دون أي إمكانية لكشف مفتاح Gemini API للمستخدم في المتصفح أو تطبيق الـ APK.'
-            : 'This app is architected with complete server-side proxies (Express / Node.js). Gemini API keys are completely isolated in server environment variables and never bundled inside client JavaScript or APK builds.'}
-        </p>
-      </div>
-
       {/* History Log Display */}
       {messages.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 p-12 rounded-3xl border border-slate-100 dark:border-slate-800 text-center space-y-3 shadow-sm">

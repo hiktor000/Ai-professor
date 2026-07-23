@@ -3,6 +3,7 @@ import { Language } from '../types';
 import { translations } from '../translations';
 import { BookOpen, Sparkles, Copy, Check, AlertCircle } from 'lucide-react';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { apiFetch } from '../lib/api';
 
 interface SummaryTabProps {
   language: Language;
@@ -25,21 +26,14 @@ export const SummaryTab: React.FC<SummaryTabProps> = ({ language }) => {
     setSummary(null);
 
     try {
-      const response = await fetch('/api/summary', {
+      const data = await apiFetch('/api/summary', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
           summaryType,
           language,
         }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || t.common.error);
-      }
 
       setSummary(data.summary);
     } catch (err: any) {
