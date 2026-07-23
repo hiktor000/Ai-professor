@@ -1,11 +1,125 @@
-<div align="center">
+# 🎓 تطبيق الأستاذ الذكي (AI Professor)
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+تطبيق أكاديمي متكامل يعتمد على الذكاء الاصطناعي لمساعدة الطلاب في جميع المراحل الدراسية، مع بنية خادم آمنة تضمن حماية مفاتيح API وعزلها تماماً عن الواجهة الأمامية وتطبيقات الـ APK.
 
-  <h1>Built with AI Studio</h2>
+---
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 🌟 مميزات التطبيق
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+1. **الدردشة التفاعلية مع الأستاذ الذكي (`/api/chat`)**:
+   - دعم التفسير بأسلوب مبسط (مبتدئ)، متوسط، أو متقدم (جامعي وعميق).
+   - استقبال أسئلة الطلاب، ملفات الـ PDF، والصور الشارحة.
 
-</div>
+2. **تحليل المستندات والصور (`/api/upload`)**:
+   - قراءة وتحليل كتب الـ PDF، المذكرات، وصور الأسئلة برؤية حاسوبية ذكية.
+   - استخراج المفاهيم والشرح خطوة بخطوة.
+
+3. **التلخيص الأكاديمي الموجه (`/api/summary`)**:
+   - ملخصات تفصيلية، موجزة، أو نقاط مركزة للمراجعة قبل الامتحان.
+
+4. **مولّد الاختبارات التفاعلية (`/api/quiz`)**:
+   - أسئلة اختيار من متعدد (MCQ)، صح وخطأ، وإكمال الفراغ.
+   - تصحيح فوري وشرح إجابات مع احتفالات بالدرجات العالية.
+
+5. **بطاقات المراجعة الذكية Flashcards (`/api/flashcards`)**:
+   - بطاقات مراجعة ثلاثية الأبعاد بآلية التقليب السلس.
+   - تحديد البطاقات المتقنة وتلك التي تحتاج مراجعة.
+
+6. **خطة المذاكرة التلقائية (`/api/study-plan`)**:
+   - جدول دراسي مقسم حسب الأيام والمهام مع نصائح الأستاذ الذكي.
+
+7. **دعم كامل للغتين العربية والإنجليزية مع اتجاه الكتابة RTL/LTR والوضع الليلي/النهاري.**
+
+---
+
+## 🔒 البنية الأمنية (Security Architecture)
+
+```
+[ الواجهة الأمامية / تطبيق الـ APK ]
+               ↓ (طلبات HTTPS الخالية من المفاتيح)
+   [ خادم Express الآمن (Backend) ]
+               ↓ (استخدام متغير البيئة GEMINI_API_KEY)
+       [ Google Gemini API ]
+```
+
+* **لا يوجد أي مفتاح API** داخل كود الواجهة الأمامية (JavaScript/HTML/CSS) أو داخل ملف الـ APK النهائي.
+* جميع الاتصالات تمر عبر مسارات الخادم `/api/*`.
+* يتم تعيين مفتاح الذكاء الاصطناعي في متغير البيئة `GEMINI_API_KEY` على الخادم فقط.
+
+---
+
+## 🚀 التشغيل المحلي (Local Development)
+
+1. **تثبيت الاعتمادات**:
+   ```bash
+   npm install
+   ```
+
+2. **ضبط ملف البيئة `.env`**:
+   قم بإنشاء ملف `.env` واضف مفتاح Gemini API الخاص بك:
+   ```env
+   GEMINI_API_KEY="AIzaSyYourSecretGeminiApiKeyHere"
+   ```
+
+3. **تشغيل خادم التطوير (Full-stack Express + Vite)**:
+   ```bash
+   npm run dev
+   ```
+   افتح المتصفح على: `http://localhost:3000`
+
+---
+
+## 📱 خطوات بناء وتحويل التطبيق إلى APK (Android APK Build)
+
+تحويل هذا المشروع إلى تطبيق Android APK باستخدام **Capacitor**:
+
+### الخطوة 1: نشر الخادم (Backend Deployment)
+قم بنشر الخادم الآمن على أي خدمة استضافة مجانية أو مدفوعة مثل (Render / Railway / Vercel / Cloudflare Workers):
+- أضف المتغير `GEMINI_API_KEY` في لوحة تحكم الخدمة التي اخترتها.
+- احصل على رابط الخادم الخاص بك (مثال: `https://ai-professor-backend.onrender.com`).
+
+### الخطوة 2: تهيئة Capacitor في المشروع
+1. قم بتثبيت اعتمادات Capacitor:
+   ```bash
+   npm install @capacitor/core @capacitor/cli @capacitor/android
+   ```
+
+2. قم بتهيئة Capacitor:
+   ```bash
+   npx cap init "AI Professor" "com.aiprofessor.app"
+   ```
+
+3. قم بإنشاء النسخة المجمعة للواجهة الأمامية:
+   ```bash
+   npm run build
+   ```
+
+4. إضافة منصة أندرويد:
+   ```bash
+   npx cap add android
+   ```
+
+5. توجيه الطلبات إلى رابط الخادم المنشور (في `capacitor.config.json` أو تعديل `fetch` المباشر):
+   افتح `capacitor.config.json` وأضف توجيه الـ API إلى رابط خادمك المنشور:
+   ```json
+   {
+     "appId": "com.aiprofessor.app",
+     "appName": "AI Professor",
+     "webDir": "dist",
+     "server": {
+       "androidScheme": "https"
+     }
+   }
+   ```
+
+6. مزامنة الملفات وفتح Android Studio لبناء ملف الـ APK:
+   ```bash
+   npx cap sync
+   npx cap open android
+   ```
+7. في Android Studio، اضغط على **Build > Build Bundle(s) / APK(s) > Build APK(s)** لتوليد ملف الـ APK النهائي الخالي تماماً من أي مفاتيح API!
+
+---
+
+## 📄 الترخيص
+حقوق الطبع والنشر محفوظة © 2026 تطبيق AI Professor.

@@ -1,0 +1,6 @@
+{
+  "name": "AI Professor",
+  "description": "An intelligent AI tutor and study assistant for students offering step-by-step lesson explanations, document & image summaries, customizable quizzes, flashcards, and automated study plans.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
